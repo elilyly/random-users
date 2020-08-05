@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
+import LikeButton from './LikeButton';
 
 const App = () => {
   const [users, setUsers] = useState([]);
@@ -22,14 +23,36 @@ const App = () => {
       .catch(error => console.log('error'))
   }
 
+  const incrementLikes = (email) => {
+    let likedUser = users.find( (user) => {
+      return user.email === email
+    });
+     if( !likedUser.userLikes ) likedUser.userLikes = 0;
+      likedUser.userLikes += 1;
+      setUsers([...users])
+    }
+    //or solve with for loop
+    // for(let i = 0; i < users.length; i++){
+    //   if(users[i].email === likedUser) {
+    //     if( !users[i].userLikes ) {
+    //         users[i].userLikes = 0;
+    //     }
+    //       users[i].userLikes = users[i].userLikes + 1;
+    //       setUsers([...users])
+    //   }
+    // }
+
+
+
   const displayUsers = () => {
     console.log("USERS", users)
     let filteredUsers = filterUsers();
     return filteredUsers.map((user, i) => {
       return (
-        <div key={i} className="user-container">
+        <div key={user.id.value} className="user-container">
           {user.name.first}
           <img src={user.picture.large}/>
+          <LikeButton userId={user.id.value} onClick={()=> incrementLikes(user.email)} likes={user.userLikes}/>
         </div>
       )
     });
@@ -56,7 +79,7 @@ const App = () => {
 
   return (
     <>
-      <input placeHolder="search name" onChange={handleChange} value={input}></input>
+      <input place-holder="search name" onChange={handleChange} value={input}></input>
       <div className="App">
         {displayUsers()}
       </div>
